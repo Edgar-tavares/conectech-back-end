@@ -24,7 +24,7 @@ public class PostController {
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<PostDTO> findById(@PathVariable String id) {
-        Post post = postService.findById(Integer.parseInt(id)); // Parse String to Integer
+        Post post = postService.findById(id); // Parse String to Integer
         PostDTO postDTO = userService.convertToDTO(post);
         return ResponseEntity.ok().body(postDTO);
     }
@@ -70,5 +70,53 @@ public class PostController {
                 .map(userService::convertToDTO)
                 .collect(Collectors.toList());
         return ResponseEntity.ok().body(postDTOs);
+    }
+    // Endpoint para curtir o post de outro usuário
+    @PostMapping("/{id}/like/{postId}")
+    public ResponseEntity<Void> likeOtherUserPost(@PathVariable String id, @PathVariable String postId) {
+        // Encontra o usuário que está curtindo o post
+        User user = userService.findById(id);
+        if (user == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        // Encontra o post pelo ID
+        Post post = postService.findById(postId);
+        if (post == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        // Incrementa o contador de likes do post
+        post.setLikes(post.getLikes() + 1);
+
+        // Salva o post
+        postService.save(post);
+
+        // Retorna uma resposta de sucesso
+        return ResponseEntity.noContent().build();
+    }
+    // Endpoint para descurtir o post de outro usuário
+    @PostMapping("/{id}/dislike/{postId}")
+    public ResponseEntity<Void> dislikeOtherUserPost(@PathVariable String id, @PathVariable String postId) {
+        // Encontra o usuário que está descurtindo o post
+        User user = userService.findById(id);
+        if (user == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        // Encontra o post pelo ID
+        Post post = postService.findById(postId);
+        if (post == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        // Decrementa o contador de likes do post
+        post.setLikes(post.getLikes() - 1);
+
+        // Salva o post
+        postService.save(post);
+
+        // Retorna uma resposta de sucesso
+        return ResponseEntity.noContent().build();
     }
 }

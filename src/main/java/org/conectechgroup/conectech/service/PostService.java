@@ -20,11 +20,11 @@ public class PostService {
     /**
      * Finds a post by its id.
      *
-     * @param id the id of the post
+     * @param postId the id of the post
      * @return the post if found, null otherwise
      */
-    public Post findById(Integer id){
-        return repo.findById(id).orElse(null);
+    public Post findById(String postId){
+        return repo.findById(postId).orElse(null);
     }
 
     /**

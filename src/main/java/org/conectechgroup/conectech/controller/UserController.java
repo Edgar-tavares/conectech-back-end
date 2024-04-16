@@ -282,7 +282,7 @@ public class UserController {
         postService.save(post);
 
         // Deletar o comentário
-        commentService.delete(Integer.parseInt(commentId));
+        commentService.delete(commentId);
 
         return ResponseEntity.noContent().build();
     }
